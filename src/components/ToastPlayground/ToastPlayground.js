@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Button from '../Button';
-import Toast from '../Toast';
+import ToastShelf from '../ToastShelf';
 
 import styles from './ToastPlayground.module.css';
 
@@ -11,7 +11,27 @@ const [firstVariant] = VARIANT_OPTIONS;
 function ToastPlayground() {
   const [message, setMessage] = React.useState('');
   const [variant, setVariant] = React.useState(firstVariant);
-  const [showToast, setShowToast] = React.useState(false);
+  const [toasts, setToasts] = React.useState([]);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setToasts([
+      ...toasts,
+      {
+        id: Math.random(),
+        variant,
+        message,
+      },
+    ]);
+    setMessage('');
+    setVariant(firstVariant);
+  }
+
+  const messageRef = React.useRef();
+
+  React.useEffect(() => {
+    messageRef.current.focus();
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -20,13 +40,9 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      {showToast && (
-        <Toast variant={variant} handleDismiss={() => setShowToast(false)}>
-          {message}
-        </Toast>
-      )}
+      <ToastShelf toasts={toasts} setToasts={setToasts} />
 
-      <div className={styles.controlsWrapper}>
+      <form className={styles.controlsWrapper} onSubmit={handleSubmit}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -37,6 +53,7 @@ function ToastPlayground() {
           </label>
           <div className={styles.inputWrapper}>
             <textarea
+              ref={messageRef}
               id="message"
               className={styles.messageInput}
               value={message}
@@ -68,10 +85,10 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => setShowToast(true)}>Pop Toast!</Button>
+            <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
