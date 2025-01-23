@@ -16,11 +16,7 @@ function ToastPlayground() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    addToast({
-      id: Math.random(),
-      variant,
-      message,
-    });
+    addToast(message, variant);
     setMessage('');
     setVariant(firstVariant);
   }
